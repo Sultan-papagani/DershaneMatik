@@ -16,7 +16,7 @@ public class YaziDecoder : MonoBehaviour
         {"FEL",("Felsefe", 5)},
         {"DIN",("Din", 5)},
         {"T.MAT",("Tyt Mat", 40)},
-        {"GEO",("Geometri", 0)},
+        {"GEO",("Geometri", 10)},
         {"FIZ",("Fizik", 7)},
         {"KIM",("Kimya", 7)},
         {"BIY",("Biyoloji", 6)},
@@ -33,7 +33,7 @@ public class YaziDecoder : MonoBehaviour
         {"DIN1",("Din1", 5)},
         {"SFEL1",("S.Felsefe1", 5)},
         {"MAT1",("Matematik1", 40)},
-        {"GEO1",("Geometri1", 0)},
+        {"GEO1",("Geometri1", 10)},
         {"EDB",("Edebiyat", 15)},
         {"KIM1",("Kimya1", 7)},
         {"BIY1",("Biyoloji1", 6)},
@@ -46,22 +46,29 @@ public class YaziDecoder : MonoBehaviour
     public GameObject yesilButon;
     public string data;
 
+    public EventTracker debugPanel;
+
     private void Start() {
-        //DecodeText();
         Application.targetFrameRate = 60;
-        //Screen.SetResolution(1080,1920,true);
-        // s
     }
 
     public void oneditstring()
     {
         data = giris.text;
 
+        if (data.Contains("debug"))
+        {
+            debugPanel.SpawnPanel();
+            giris.text = "";
+            return;
+        }
+
         if (!data.Contains("YKS SONUCU"))
         {
             yesilButon.SetActive(false);
             return;
         }
+
         
         DecodeText();
         yesilButon.SetActive(true);

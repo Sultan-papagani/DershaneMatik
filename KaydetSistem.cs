@@ -17,6 +17,8 @@ public class KaydetSistem : MonoBehaviour, PageNav
 
     public PageSelector pageSelector;
 
+    public SonucGosterici sonucGosterici;
+
     bool yuklendi = false;
 
     int callbackindex = 0;
@@ -35,7 +37,11 @@ public class KaydetSistem : MonoBehaviour, PageNav
     {
         ActionPanel.SetActive(false);
         decoder.ensonSonuc = data.sonuc[callbackindex];
-        pageSelector.PanelAc(PanelCesit.format);
+        
+        sonucGosterici.gameObject.SetActive(true); // kapalıdır zaten
+        sonucGosterici.KaydetSistemdenGelenIndex(callbackindex); // bunu paneli açtıktan sonra çağır ki işlesin
+
+        pageSelector.PanelAc(PanelCesit.format); // paneli açıyoruz ama bizide kapatıyor :/
     }
 
     public void ActionPanelVeriyiSil()
@@ -57,6 +63,56 @@ public class KaydetSistem : MonoBehaviour, PageNav
         Start();
         string jsonDataString = JsonUtility.ToJson(data, true);
 		File.WriteAllText(path, jsonDataString);
+    }
+
+    public void SaveEditData(TytSonucu sonuc, int orginalIndex)
+    {
+        Start(); // EFSANE SİSTEM
+        // eski veriyi oku
+        if(File.Exists(path))
+        {
+            string loadedJsonDataString = File.ReadAllText(path);
+            data = JsonUtility.FromJson<JsonTytSonuc>(loadedJsonDataString);
+        }
+        else
+        {
+            data = new JsonTytSonuc();
+            data.sonuc = new List<TytSonucu>();
+        }
+
+        // değşitir
+        data.sonuc[orginalIndex] = sonuc;
+        
+        // kaydet
+        string jsonDataString = JsonUtility.ToJson(data, true);
+		File.WriteAllText(path, jsonDataString);
+
+        YenileUIButon();
+    }
+
+    public void SaveCustomData(TytSonucu sonuc)
+    {
+        Start(); // EFSANE SİSTEM
+        // eski veriyi oku
+        if(File.Exists(path))
+        {
+            string loadedJsonDataString = File.ReadAllText(path);
+            data = JsonUtility.FromJson<JsonTytSonuc>(loadedJsonDataString);
+        }
+        else
+        {
+            data = new JsonTytSonuc();
+            data.sonuc = new List<TytSonucu>();
+        }
+
+        // append (değiştirildi)
+        data.sonuc.Add(sonuc);
+        
+        // kaydet
+        string jsonDataString = JsonUtility.ToJson(data, true);
+		File.WriteAllText(path, jsonDataString);
+
+        YenileUIButon();
     }
 
     public void SaveNewData()

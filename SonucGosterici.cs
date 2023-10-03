@@ -16,10 +16,51 @@ public class SonucGosterici : MonoBehaviour, PageNav
 
     public Transform spawnlist;
 
+    public ManuelDenemeEkle manuelDenemeEkle;
+
+    public GameObject EditButton;
+
+    bool editlenebilir = false;
+    int kaydetindex = 0;
+
     public void UIKaydet()
     {
         if (decoder.ensonSonuc == null){return;}
         KaydetmeEkrani.SetActive(true);
+    }
+
+    public void KaydetSistemdenGelenIndex(int i)
+    {
+        // butonuda aktif yap
+        EditButton.SetActive(true);
+
+        editlenebilir = true;
+        kaydetindex = i;
+
+    }
+
+    public void UIEdit()
+    {
+        // KaydetSistemden Panel Action olarak çağrılınca kaydedili demek
+        // bunu custom ekleye yükle.
+        // ve kaydedirken o indexin üstüne yaz.
+
+        if (!editlenebilir){return;}
+
+        // he burayıda sıfırlasak ii olur
+        foreach (Transform child in spawnlist) 
+        {
+	        GameObject.Destroy(child.gameObject);
+        }
+
+        manuelDenemeEkle.gameObject.SetActive(true); // tabi bunlar page olduğundan kapalılar.
+        manuelDenemeEkle.SonucGostericidenEditIcinYukle(kaydetindex);
+
+        // burda bişey kalmadığına göre noolur noolmaz flagı eski haline koyalım
+        editlenebilir = false;
+        EditButton.SetActive(false); // butonuda kapat
+        gameObject.SetActive(false); // burayı kapat
+
     }
 
     public void KaydetmeEkraniCallback(string denemeadi, int denememodu)
@@ -41,6 +82,7 @@ public class SonucGosterici : MonoBehaviour, PageNav
 
     public void OnAcilis()
     {
+        //editlenebilir = false;
         if (decoder.ensonSonuc == null){return;}
         if (!(decoder.ensonSonuc.dersler.Count > 0)){return;} // bazı yerlerde ensonsonuc u tanımlıyoz
 
