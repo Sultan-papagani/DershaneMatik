@@ -50,6 +50,7 @@ public class YaziDecoder : MonoBehaviour
 
     private void Start() {
         Application.targetFrameRate = 60;
+        Input.backButtonLeavesApp = true;
     }
 
     public void oneditstring()
